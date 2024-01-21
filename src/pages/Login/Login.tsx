@@ -1,7 +1,14 @@
+import { useState } from "react";
 import { useSessionStorage } from "@uidotdev/usehooks";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
+import useSWRMutation from "swr/mutation";
+import { ToastOptions, toast } from "react-toastify";
+import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
+
+import { API_URL } from "@/constants";
+import { postRequest } from "@/helpers/postRequest";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -19,13 +26,55 @@ const formScheme = z.object({
   Email: z.string().email({
     message: "Invalid email",
   }),
-  Password: z.string().min(6, {
-    message: "Password must be at least 6 characters",
+  Password: z.string().min(5, {
+    message: "Password must be at least 5 characters",
   }),
 });
 
+interface ILoginRequest {
+  Email: string;
+  Password: string;
+}
+
+interface ILoginResponse {
+  message: string;
+  token: string;
+  role: string;
+}
+
+const toastConfig = {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+} satisfies ToastOptions;
+
+const toastSuccess = (message: string): void => {
+  toast.success(message, {
+    ...toastConfig,
+  });
+};
+
+const toastError = (message: string): void => {
+  toast.error(message, {
+    ...toastConfig,
+  });
+};
+
 const Login = (): JSX.Element => {
-  const [jwt, setJWT] = useSessionStorage("jwt", "");
+  const { trigger: login, isMutating: isLoading } = useSWRMutation(
+    `${API_URL}/login`,
+    postRequest<ILoginRequest, ILoginResponse>
+  );
+
+  const [, setUserData] = useSessionStorage<{
+    jwt: string;
+    role: string;
+  } | null>("user-data", null);
 
   const form = useForm<z.infer<typeof formScheme>>({
     resolver: zodResolver(formScheme),
@@ -35,8 +84,34 @@ const Login = (): JSX.Element => {
     },
   });
 
-  const onFormSubmit = (values: z.infer<typeof formScheme>): void => {
-    console.log("values", values);
+  const [togglePasswordVisibility, setTogglePasswordVisibility] =
+    useState(false);
+
+  const onFormSubmit = async (
+    values: z.infer<typeof formScheme>
+  ): Promise<void> => {
+    await login(values, {
+      onSuccess: (data) => {
+        setUserData({
+          jwt: data?.token,
+          role: data?.role,
+        });
+
+        toastSuccess(data?.message);
+      },
+
+      onError: (error) => {
+        if (error instanceof Error) {
+          toastError(error.message + " Check your email and password.");
+        } else {
+          toastError("Something went wrong. Please try again later.");
+        }
+      },
+    });
+  };
+
+  const onTogglePasswordVisibilityButtonClick = (): void => {
+    setTogglePasswordVisibility((prev) => !prev);
   };
 
   return (
@@ -65,7 +140,12 @@ const Login = (): JSX.Element => {
                 <FormItem>
                   <FormLabel>Email</FormLabel>
                   <FormControl>
-                    <Input placeholder="Email" {...field} />
+                    <Input
+                      placeholder="user@mail.com"
+                      {...field}
+                      type="email"
+                      disabled={isLoading}
+                    />
                   </FormControl>
                   <FormDescription>Enter your working email</FormDescription>
                   <FormMessage />
@@ -80,7 +160,28 @@ const Login = (): JSX.Element => {
                 <FormItem>
                   <FormLabel>Password</FormLabel>
                   <FormControl>
-                    <Input placeholder="Password" {...field} />
+                    <div className="flex flex-row gap-2">
+                      <Input
+                        placeholder="12345"
+                        {...field}
+                        type={togglePasswordVisibility ? "text" : "password"}
+                        disabled={isLoading}
+                      />
+
+                      <Button
+                        disabled={isLoading}
+                        onClick={onTogglePasswordVisibilityButtonClick}
+                        type="button"
+                        size="icon"
+                        variant="outline"
+                      >
+                        {togglePasswordVisibility ? (
+                          <EyeClosedIcon />
+                        ) : (
+                          <EyeOpenIcon />
+                        )}
+                      </Button>
+                    </div>
                   </FormControl>
                   <FormDescription>Enter your password</FormDescription>
                   <FormMessage />
@@ -90,7 +191,8 @@ const Login = (): JSX.Element => {
 
             <Button
               type="submit"
-              className="flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 "
+              className="flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
+              disabled={isLoading}
             >
               Login
             </Button>

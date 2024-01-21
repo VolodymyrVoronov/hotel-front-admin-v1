@@ -2,7 +2,9 @@ import React from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { SWRConfig } from "swr";
+import { ToastContainer } from "react-toastify";
 
+import { ROUTES } from "./constants";
 import RequireAuth from "./helpers/RequireAuth";
 
 import AuthLayout from "./layout/AuthLayout/AuthLayout";
@@ -12,10 +14,11 @@ import Login from "./pages/Login/Login";
 
 import "./styles/custom.css";
 import "./styles/globals.css";
+import "react-toastify/dist/ReactToastify.css";
 
 const router = createBrowserRouter([
   {
-    path: "/",
+    path: ROUTES.DASHBOARD,
     element: (
       <RequireAuth>
         <AdminBoard />
@@ -23,17 +26,17 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/home",
-        element: <div>Login</div>,
+        path: "/booking",
+        element: <div>Booking</div>,
       },
     ],
   },
   {
-    path: "/auth",
+    path: ROUTES.AUTH,
     element: <AuthLayout />,
     children: [
       {
-        path: "login",
+        path: ROUTES.LOGIN,
         element: <Login />,
       },
     ],
@@ -54,6 +57,8 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
       }}
     >
       <RouterProvider router={router} />
+
+      <ToastContainer />
     </SWRConfig>
   </React.StrictMode>
 );
