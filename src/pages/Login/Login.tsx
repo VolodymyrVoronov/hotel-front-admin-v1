@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 import { useSessionStorage } from "@uidotdev/usehooks";
 import * as z from "zod";
 import { useForm } from "react-hook-form";
@@ -7,7 +8,7 @@ import useSWRMutation from "swr/mutation";
 import { ToastOptions, toast } from "react-toastify";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
-import { API_URL } from "@/constants";
+import { API_URL, ROUTES } from "@/constants";
 import { postRequest } from "@/helpers/postRequest";
 
 import { Button } from "@/components/ui/button";
@@ -53,25 +54,29 @@ const toastConfig = {
   theme: "light",
 } satisfies ToastOptions;
 
-const toastSuccess = (message: string): void => {
+const toastSuccess = (message: string, options?: ToastOptions): void => {
   toast.success(message, {
     ...toastConfig,
+    ...options,
   });
 };
 
-const toastError = (message: string): void => {
+const toastError = (message: string, options?: ToastOptions): void => {
   toast.error(message, {
     ...toastConfig,
+    ...options,
   });
 };
 
 const Login = (): JSX.Element => {
+  const navigate = useNavigate();
+
   const { trigger: login, isMutating: isLoading } = useSWRMutation(
     `${API_URL}/login`,
     postRequest<ILoginRequest, ILoginResponse>
   );
 
-  const [, setUserData] = useSessionStorage<{
+  const [userData, setUserData] = useSessionStorage<{
     jwt: string;
     role: string;
   } | null>("user-data", null);
@@ -97,7 +102,14 @@ const Login = (): JSX.Element => {
           role: data?.role,
         });
 
-        toastSuccess(data?.message);
+        toastSuccess(data?.message, {
+          autoClose: 2000,
+        });
+        form.reset();
+
+        setTimeout(() => {
+          navigate(ROUTES.DASHBOARD, { replace: true });
+        }, 2000);
       },
 
       onError: (error) => {
@@ -113,6 +125,12 @@ const Login = (): JSX.Element => {
   const onTogglePasswordVisibilityButtonClick = (): void => {
     setTogglePasswordVisibility((prev) => !prev);
   };
+
+  useEffect(() => {
+    if (userData?.jwt) {
+      navigate(ROUTES.DASHBOARD, { replace: true });
+    }
+  }, []);
 
   return (
     <div className="flex  h-screen flex-1 flex-col justify-center px-6 py-12 lg:px-8">
