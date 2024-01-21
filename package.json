@@ -17,6 +17,7 @@
     "@radix-ui/react-toast": "^1.1.5",
     "@uidotdev/usehooks": "^2.4.1",
     "class-variance-authority": "^0.7.0",
+    "classnames": "^2.5.1",
     "clsx": "^2.1.0",
     "million": "^2.6.4",
     "react": "^18.2.0",

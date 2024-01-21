@@ -26,8 +26,28 @@ const router = createBrowserRouter([
     ),
     children: [
       {
-        path: "/booking",
+        path: ROUTES.DASHBOARD,
         element: <div>Booking</div>,
+      },
+      {
+        path: ROUTES.ROOMS,
+        element: <div>Rooms</div>,
+      },
+      {
+        path: ROUTES.USERS,
+        element: <div>Users</div>,
+      },
+      {
+        path: ROUTES.REGISTER,
+        element: <div>Register</div>,
+      },
+      {
+        path: ROUTES.SUBSCRIPTIONS,
+        element: <div>Subscriptions</div>,
+      },
+      {
+        path: ROUTES.EMAILS,
+        element: <div>Emails</div>,
       },
     ],
   },
