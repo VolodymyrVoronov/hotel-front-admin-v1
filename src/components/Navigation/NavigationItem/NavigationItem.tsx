@@ -18,9 +18,12 @@ const NavigationItem = ({
     <NavLink
       to={to}
       className={({ isActive }) =>
-        cn("flex p-3 text-xl font-medium hover:bg-blue-100", {
-          ["text-blue-500 bg-blue-50"]: isActive,
-        })
+        cn(
+          "flex p-2 md:p-3 text-sm md:text-xl font-medium hover:bg-blue-100 ease-in-out duration-300",
+          {
+            ["text-blue-500 bg-blue-50"]: isActive,
+          }
+        )
       }
       {...props}
     >
