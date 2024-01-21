@@ -27,7 +27,7 @@ const router = createBrowserRouter([
     children: [
       {
         path: ROUTES.DASHBOARD,
-        element: <div>Booking</div>,
+        element: <div>Bookings</div>,
       },
       {
         path: ROUTES.ROOMS,

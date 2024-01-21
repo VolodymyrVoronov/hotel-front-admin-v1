@@ -35,10 +35,14 @@ const navigationItems = [
   },
 ] as const;
 
-const Navigation = (): JSX.Element => {
+interface INavigationProps {
+  className?: string;
+}
+
+const Navigation = ({ className }: INavigationProps): JSX.Element => {
   return (
-    <nav>
-      <ul>
+    <nav className={className}>
+      <ul className="grid grid-cols-2 md:grid-cols-1">
         {navigationItems.map(({ id, name, path }) => (
           <li key={id}>
             <NavigationItem to={path}>{name}</NavigationItem>

@@ -19,7 +19,7 @@ const NavigationItem = ({
       to={to}
       className={({ isActive }) =>
         cn(
-          "flex p-2 md:p-3 text-sm md:text-xl font-medium hover:bg-blue-100 ease-in-out duration-300",
+          "flex p-2 md:p-3 text-md md:text-xl font-medium hover:bg-blue-100 ease-in-out duration-300",
           {
             ["text-blue-500 bg-blue-50"]: isActive,
           }
