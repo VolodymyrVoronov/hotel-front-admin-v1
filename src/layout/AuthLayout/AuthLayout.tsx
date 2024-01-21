@@ -1,12 +1,7 @@
 import { Outlet } from "react-router-dom";
 
 const AuthLayout = (): JSX.Element => {
-  return (
-    <div>
-      AuthLayout
-      <Outlet />
-    </div>
-  );
+  return <Outlet />;
 };
 
 export default AuthLayout;

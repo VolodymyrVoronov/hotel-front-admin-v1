@@ -10,7 +10,8 @@ import AdminBoard from "./layout/AdminBoard/AdminBoard";
 
 import Login from "./pages/Login/Login";
 
-import "./styles/global.css";
+import "./styles/custom.css";
+import "./styles/globals.css";
 
 const router = createBrowserRouter([
   {
