@@ -10,6 +10,7 @@ import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
 import { API_URL, ROUTES } from "@/constants";
 import { postRequest } from "@/helpers/postRequest";
+import { UserData } from "@/types/user-data.types";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -76,10 +77,10 @@ const Login = (): JSX.Element => {
     postRequest<ILoginRequest, ILoginResponse>
   );
 
-  const [userData, setUserData] = useSessionStorage<{
-    jwt: string;
-    role: string;
-  } | null>("user-data", null);
+  const [userData, setUserData] = useSessionStorage<UserData>(
+    "user-data",
+    null
+  );
 
   const form = useForm<z.infer<typeof formScheme>>({
     resolver: zodResolver(formScheme),

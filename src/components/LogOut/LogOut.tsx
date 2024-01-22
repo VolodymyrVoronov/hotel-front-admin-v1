@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useSessionStorage } from "@uidotdev/usehooks";
 
 import { PATHS } from "@/constants";
+import { UserData } from "@/types/user-data.types";
 
 import { Button, ButtonProps } from "@/components/ui/button";
 
@@ -13,10 +14,7 @@ interface ILogOutProps extends ButtonProps {
 const LogOut = ({ children, ...props }: ILogOutProps): JSX.Element => {
   const navigate = useNavigate();
 
-  const [, setUserData] = useSessionStorage<{
-    jwt: string;
-    role: string;
-  } | null>("user-data", null);
+  const [, setUserData] = useSessionStorage<UserData>("user-data", null);
 
   const onLogOutButtonClick = (): void => {
     setUserData(null);
@@ -24,7 +22,12 @@ const LogOut = ({ children, ...props }: ILogOutProps): JSX.Element => {
   };
 
   return (
-    <Button onClick={onLogOutButtonClick} type="button" {...props}>
+    <Button
+      onClick={onLogOutButtonClick}
+      type="button"
+      variant="destructive"
+      {...props}
+    >
       {children ?? "Log out"}
     </Button>
   );

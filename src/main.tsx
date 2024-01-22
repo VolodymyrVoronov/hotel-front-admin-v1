@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense, lazy } from "react";
 import ReactDOM from "react-dom/client";
 import { RouterProvider, createBrowserRouter } from "react-router-dom";
 import { SWRConfig } from "swr";
@@ -11,6 +11,10 @@ import AuthLayout from "./layout/AuthLayout/AuthLayout";
 import AdminBoard from "./layout/AdminBoard/AdminBoard";
 
 import Login from "./pages/Login/Login";
+
+import Loader from "./components/Loader/Loader";
+
+const Bookings = lazy(() => import("./pages/Bookings/Bookings"));
 
 import "./styles/custom.css";
 import "./styles/globals.css";
@@ -27,27 +31,31 @@ const router = createBrowserRouter([
     children: [
       {
         path: ROUTES.DASHBOARD,
-        element: <div>Bookings</div>,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Bookings />
+          </Suspense>
+        ),
       },
       {
         path: ROUTES.ROOMS,
-        element: <div>Rooms</div>,
+        element: <Suspense fallback={<Loader />}>Rooms</Suspense>,
       },
       {
         path: ROUTES.USERS,
-        element: <div>Users</div>,
+        element: <Suspense fallback={<Loader />}>Users</Suspense>,
       },
       {
         path: ROUTES.REGISTER,
-        element: <div>Register</div>,
+        element: <Suspense fallback={<Loader />}>Register</Suspense>,
       },
       {
         path: ROUTES.SUBSCRIPTIONS,
-        element: <div>Subscriptions</div>,
+        element: <Suspense fallback={<Loader />}>Subscriptions</Suspense>,
       },
       {
         path: ROUTES.EMAILS,
-        element: <div>Emails</div>,
+        element: <Suspense fallback={<Loader />}>Emails</Suspense>,
       },
     ],
   },

@@ -1,6 +1,12 @@
 import { ROUTES } from "@/constants";
+import { NavLink, useLocation } from "react-router-dom";
 
-import NavigationItem from "./NavigationItem/NavigationItem";
+import {
+  NavigationMenu,
+  NavigationMenuItem,
+  NavigationMenuList,
+} from "@/components/ui/navigation-menu";
+import { Button } from "../ui/button";
 
 const navigationItems = [
   {
@@ -40,16 +46,24 @@ interface INavigationProps {
 }
 
 const Navigation = ({ className }: INavigationProps): JSX.Element => {
+  const location = useLocation();
+
   return (
-    <nav className={className}>
-      <ul className="grid grid-cols-2 md:grid-cols-1">
+    <NavigationMenu className={className}>
+      <NavigationMenuList>
         {navigationItems.map(({ id, name, path }) => (
-          <li key={id}>
-            <NavigationItem to={path}>{name}</NavigationItem>
-          </li>
+          <NavigationMenuItem key={id}>
+            <NavLink to={path}>
+              <Button
+                variant={location.pathname === path ? "default" : "ghost"}
+              >
+                {name}
+              </Button>
+            </NavLink>
+          </NavigationMenuItem>
         ))}
-      </ul>
-    </nav>
+      </NavigationMenuList>
+    </NavigationMenu>
   );
 };
 
