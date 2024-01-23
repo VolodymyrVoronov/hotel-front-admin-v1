@@ -8,10 +8,7 @@ const AdminBoard = (): JSX.Element => {
     <div className="w-full">
       <div className="flex flex-row justify-between p-2 md:p-3 border-b-2 border-slate-200">
         <Navigation />
-
-        <div>
-          <LogOut />
-        </div>
+        <LogOut />
       </div>
 
       <div className="p-2 md:p-3">
