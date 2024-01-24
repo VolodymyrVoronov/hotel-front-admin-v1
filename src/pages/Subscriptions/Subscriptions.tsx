@@ -1,11 +1,10 @@
 import { useEffect } from "react";
 import useSWRMutation from "swr/mutation";
-import { useSessionStorage } from "@uidotdev/usehooks";
+import { useHookstate } from "@hookstate/core";
 
+import globalState, { IGlobalState } from "@/state/state";
 import { getRequest } from "@/helpers/getRequest";
 import { API_URL } from "@/constants";
-
-import { UserData } from "@/types/user-data.types";
 
 import {
   Table,
@@ -26,7 +25,7 @@ interface ISubscriptionResponse {
 }
 
 const Subscriptions = (): JSX.Element => {
-  const [userData] = useSessionStorage<UserData>("user-data", null);
+  const { userData } = useHookstate<IGlobalState>(globalState).get();
 
   const {
     data: subscriptions,

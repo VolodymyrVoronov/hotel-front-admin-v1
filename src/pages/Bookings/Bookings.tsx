@@ -1,19 +1,19 @@
 import { useEffect } from "react";
 import useSWRMutation from "swr/mutation";
-import { useSessionStorage } from "@uidotdev/usehooks";
+import { useHookstate } from "@hookstate/core";
+
+import globalState, { IGlobalState } from "@/state/state";
 
 import { API_URL } from "@/constants";
 import { getRequest } from "@/helpers/getRequest";
 import { postRequestWithHeaders } from "@/helpers/postRequest";
-import { UserData } from "@/types/user-data.types";
 import { IBooking } from "@/interfaces/booking.interface";
 
 import Booking from "@/components/Booking/Booking";
-
 interface IAllBookingsResponse extends IBooking {}
 
 const Bookings = (): JSX.Element => {
-  const [userData] = useSessionStorage<UserData>("user-data", null);
+  const { userData } = useHookstate<IGlobalState>(globalState).get();
 
   const {
     data: bookings,
