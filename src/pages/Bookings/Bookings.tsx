@@ -17,7 +17,7 @@ const Bookings = (): JSX.Element => {
 
   const {
     data: bookings,
-    trigger: loadingBookings,
+    trigger: loadBookings,
     isMutating: isBookingsLoading,
   } = useSWRMutation(
     {
@@ -47,12 +47,12 @@ const Bookings = (): JSX.Element => {
   );
 
   useEffect(() => {
-    loadingBookings();
+    loadBookings();
   }, []);
 
   useEffect(() => {
     if (processBookingData?.processed && !isBookingProcessing) {
-      loadingBookings();
+      loadBookings();
     }
   }, [processBookingData?.processed, isBookingProcessing]);
 

@@ -15,6 +15,8 @@ import Login from "./pages/Login/Login";
 import Loader from "./components/Loader/Loader";
 
 const Bookings = lazy(() => import("./pages/Bookings/Bookings"));
+const Subscriptions = lazy(() => import("./pages/Subscriptions/Subscriptions"));
+const Emails = lazy(() => import("./pages/Emails/Emails"));
 
 import "./styles/custom.css";
 import "./styles/globals.css";
@@ -51,11 +53,19 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.SUBSCRIPTIONS,
-        element: <Suspense fallback={<Loader />}>Subscriptions</Suspense>,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Subscriptions />
+          </Suspense>
+        ),
       },
       {
         path: ROUTES.EMAILS,
-        element: <Suspense fallback={<Loader />}>Emails</Suspense>,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Emails />
+          </Suspense>
+        ),
       },
     ],
   },
