@@ -95,7 +95,10 @@ const Booking = ({
           End date: <b>{formattedEndDate}</b>
         </p>
         <p>
-          Processed: <b>{Processed ? "Yes" : "No"}</b>
+          Processed:{" "}
+          <b className={cn(Processed ? "text-green-500" : "text-red-500")}>
+            {Processed ? "Yes" : "No"}
+          </b>
         </p>
       </CardContent>
       <CardFooter className="flex flex-col items-start space-y-3">
@@ -111,7 +114,11 @@ const Booking = ({
           onClick={onProcessButtonClick}
           disabled={loading}
           type="button"
-          className={cn(Processed ? "bg-green-500" : "bg-red-500", "w-full")}
+          className={cn(
+            "transition duration-300",
+            Processed ? "bg-green-500" : "bg-red-500",
+            "w-full"
+          )}
         >
           Processed: {Processed ? "Yes" : "No"}
         </Button>
