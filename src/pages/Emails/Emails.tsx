@@ -65,11 +65,11 @@ const Emails = (): JSX.Element => {
 
         <TableHeader>
           <TableRow>
-            <TableHead className="w-[10px]">ID</TableHead>
-            <TableHead className="w-[100px]">Name</TableHead>
-            <TableHead>Email</TableHead>
-            <TableHead>Message</TableHead>
-            <TableHead className="text-right">Sent</TableHead>
+            <TableHead className="w-[10px] border">ID</TableHead>
+            <TableHead className="w-[100px] border">Name</TableHead>
+            <TableHead className="border">Email</TableHead>
+            <TableHead className="border">Message</TableHead>
+            <TableHead className="text-right border">Sent</TableHead>
           </TableRow>
         </TableHeader>
 

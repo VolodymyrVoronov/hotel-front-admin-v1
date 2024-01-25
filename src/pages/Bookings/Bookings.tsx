@@ -10,6 +10,7 @@ import { postRequestWithHeaders } from "@/helpers/postRequest";
 import { IBooking } from "@/interfaces/booking.interface";
 
 import Booking from "@/components/Booking/Booking";
+
 interface IAllBookingsResponse extends IBooking {}
 
 const Bookings = (): JSX.Element => {
