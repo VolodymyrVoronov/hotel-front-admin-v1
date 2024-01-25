@@ -53,6 +53,14 @@ const Users = (): JSX.Element => {
 
   const onCreateNewUserButtonClick = (): void => {};
 
+  if (!users?.length && !isUsersLoading) {
+    return (
+      <div className="flex justify-center max-w-[768px] m-auto">
+        <p className="text-xl">Nothing to show</p>
+      </div>
+    );
+  }
+
   return (
     <div className="flex max-w-[1024px] m-auto">
       <Table className="w-full">
