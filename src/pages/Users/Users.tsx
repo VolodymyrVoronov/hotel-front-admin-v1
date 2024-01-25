@@ -20,7 +20,6 @@ import { Button } from "@/components/ui/button";
 
 interface IAllUsersResponse {
   ID: number;
-  Name: string;
   Email: string;
   Role: string;
   CreatedAt: string;
