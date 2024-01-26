@@ -1,4 +1,4 @@
-import { useEffect } from "react";
+import { lazy, useEffect, Suspense } from "react";
 import { useHookstate } from "@hookstate/core";
 import useSWRMutation from "swr/mutation";
 
@@ -17,6 +17,10 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { Button } from "@/components/ui/button";
+import DrawerContainer from "@/components/DrawerContainer/DrawerContainer";
+import Loader from "@/components/Loader/Loader";
+
+const NewUserForm = lazy(() => import("@/components/NewUserForm/NewUserForm"));
 
 interface IAllUsersResponse {
   ID: number;
@@ -64,14 +68,23 @@ const Users = (): JSX.Element => {
     <div className="flex max-w-[1024px] m-auto">
       <Table className="w-full">
         <TableCaption>
-          <Button
-            disabled={isUsersLoading}
-            variant="secondary"
-            size="sm"
-            onClick={onCreateNewUserButtonClick}
+          <DrawerContainer
+            triggerButton={
+              <Button
+                disabled={isUsersLoading}
+                variant="secondary"
+                size="sm"
+                onClick={onCreateNewUserButtonClick}
+              >
+                Create new user
+              </Button>
+            }
+            title="New user"
           >
-            Create new user
-          </Button>
+            <Suspense fallback={<Loader />}>
+              <NewUserForm />
+            </Suspense>
+          </DrawerContainer>
         </TableCaption>
 
         <TableHeader>

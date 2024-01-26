@@ -24,7 +24,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 
-const formScheme = z.object({
+const formSchema = z.object({
   Email: z.string().email({
     message: "Invalid email",
   }),
@@ -82,8 +82,8 @@ const Login = (): JSX.Element => {
     null
   );
 
-  const form = useForm<z.infer<typeof formScheme>>({
-    resolver: zodResolver(formScheme),
+  const form = useForm<z.infer<typeof formSchema>>({
+    resolver: zodResolver(formSchema),
     defaultValues: {
       Email: "",
       Password: "",
@@ -94,7 +94,7 @@ const Login = (): JSX.Element => {
     useState(false);
 
   const onFormSubmit = async (
-    values: z.infer<typeof formScheme>
+    values: z.infer<typeof formSchema>
   ): Promise<void> => {
     await login(values, {
       onSuccess: (data) => {
