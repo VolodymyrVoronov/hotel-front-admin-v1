@@ -62,35 +62,19 @@ const Navigation = ({ className }: INavigationProps): JSX.Element => {
     <NavigationMenu className={className}>
       <NavigationMenuList>
         {navigationItems.map(({ id, name, path, onlyAdmin }) => {
-          if (
-            (userData?.role === USER_ROLE.MANAGER ||
-              userData?.role === USER_ROLE.USER) &&
-            !onlyAdmin
-          ) {
-            return (
-              <NavigationMenuItem key={id}>
-                <NavLink to={path}>
-                  <Button
-                    variant={location.pathname === path ? "default" : "ghost"}
-                  >
-                    {name}
-                  </Button>
-                </NavLink>
-              </NavigationMenuItem>
-            );
-          } else {
-            return (
-              <NavigationMenuItem key={id}>
-                <NavLink to={path}>
-                  <Button
-                    variant={location.pathname === path ? "default" : "ghost"}
-                  >
-                    {name}
-                  </Button>
-                </NavLink>
-              </NavigationMenuItem>
-            );
-          }
+          return (userData?.role === USER_ROLE.MANAGER ||
+            userData?.role === USER_ROLE.USER) &&
+            onlyAdmin ? null : (
+            <NavigationMenuItem key={id}>
+              <NavLink to={path}>
+                <Button
+                  variant={location.pathname === path ? "default" : "ghost"}
+                >
+                  {name}
+                </Button>
+              </NavLink>
+            </NavigationMenuItem>
+          );
         })}
       </NavigationMenuList>
     </NavigationMenu>

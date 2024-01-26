@@ -48,16 +48,20 @@ const router = createBrowserRouter([
       {
         path: ROUTES.USERS,
         element: (
-          <Suspense fallback={<Loader />}>
-            <RequireRole>
+          <RequireRole>
+            <Suspense fallback={<Loader />}>
               <Users />
-            </RequireRole>
-          </Suspense>
+            </Suspense>
+          </RequireRole>
         ),
       },
       {
         path: ROUTES.REGISTER,
-        element: <Suspense fallback={<Loader />}>Register</Suspense>,
+        element: (
+          <RequireRole>
+            <Suspense fallback={<Loader />}>Register</Suspense>
+          </RequireRole>
+        ),
       },
       {
         path: ROUTES.SUBSCRIPTIONS,
