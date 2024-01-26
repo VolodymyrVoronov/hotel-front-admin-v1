@@ -4,7 +4,7 @@ import useSWRMutation from "swr/mutation";
 
 import globalState, { IGlobalState } from "@/state/state";
 
-import { API_URL } from "@/constants";
+import { API_URL, USER_ROLE } from "@/constants";
 import { getRequest } from "@/helpers/getRequest";
 
 import {
@@ -109,7 +109,7 @@ const Users = (): JSX.Element => {
                 {new Date(user.CreatedAt).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right border align-top">
-                {user.Role !== "admin" && (
+                {user.Role !== USER_ROLE.ADMIN && (
                   <Button
                     disabled={isUsersLoading}
                     variant="destructive"

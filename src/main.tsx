@@ -6,6 +6,7 @@ import { ToastContainer } from "react-toastify";
 
 import { ROUTES } from "./constants";
 import RequireAuth from "./helpers/RequireAuth";
+import RequireRole from "./helpers/RequireRole";
 
 import AuthLayout from "./layout/AuthLayout/AuthLayout";
 import AdminBoard from "./layout/AdminBoard/AdminBoard";
@@ -48,7 +49,9 @@ const router = createBrowserRouter([
         path: ROUTES.USERS,
         element: (
           <Suspense fallback={<Loader />}>
-            <Users />
+            <RequireRole>
+              <Users />
+            </RequireRole>
           </Suspense>
         ),
       },
