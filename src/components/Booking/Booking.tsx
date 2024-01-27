@@ -21,6 +21,7 @@ interface IBookingProps extends IBooking {
   }) => void;
 
   loading: boolean;
+  hideButton?: boolean;
 }
 
 const Booking = ({
@@ -40,6 +41,7 @@ const Booking = ({
   onProcessClick,
 
   loading,
+  hideButton,
 }: IBookingProps): JSX.Element => {
   const startDate = new Date(StartDate);
   const endDate = new Date(EndDate);
@@ -109,20 +111,23 @@ const Booking = ({
           Total booked days: <b>{TotalBookedDays}</b>
         </p>
       </CardFooter>
-      <CardFooter className="flex mt-auto">
-        <Button
-          onClick={onProcessButtonClick}
-          disabled={loading}
-          type="button"
-          className={cn(
-            "transition duration-300",
-            Processed ? "bg-green-500" : "bg-red-500",
-            "w-full"
-          )}
-        >
-          Processed: {Processed ? "Yes" : "No"}
-        </Button>
-      </CardFooter>
+
+      {hideButton ? null : (
+        <CardFooter className="flex mt-auto">
+          <Button
+            onClick={onProcessButtonClick}
+            disabled={loading}
+            type="button"
+            className={cn(
+              "transition duration-300",
+              Processed ? "bg-green-500" : "bg-red-500",
+              "w-full"
+            )}
+          >
+            Processed: {Processed ? "Yes" : "No"}
+          </Button>
+        </CardFooter>
+      )}
     </Card>
   );
 };

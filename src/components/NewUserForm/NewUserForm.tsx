@@ -90,6 +90,7 @@ const NewUserForm = (): JSX.Element => {
       headers: {
         Authorization: `Bearer ${userData?.jwt}`,
       },
+      method: "POST"
     },
     postRequestWithHeaders<IRegisterRequest, IRegisterResponse>
   );

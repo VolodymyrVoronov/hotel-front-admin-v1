@@ -1,11 +1,13 @@
 import { useEffect } from "react";
 import { useHookstate } from "@hookstate/core";
 import useSWRMutation from "swr/mutation";
+import { ToastOptions, toast } from "react-toastify";
 
 import globalState, { IGlobalState } from "@/state/state";
 
 import { API_URL, USER_ROLE } from "@/constants";
 import { getRequest } from "@/helpers/getRequest";
+import { postRequestWithHeaders } from "@/helpers/postRequest";
 
 import {
   Table,
@@ -16,6 +18,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
 import { Button } from "@/components/ui/button";
 
 interface IAllUsersResponse {
@@ -24,6 +37,39 @@ interface IAllUsersResponse {
   Role: string;
   CreatedAt: string;
 }
+
+interface IDeleteRequest {
+  ID: number;
+}
+
+interface IDeleteResponse {
+  message: string;
+}
+
+const toastConfig = {
+  position: "top-right",
+  autoClose: 5000,
+  hideProgressBar: false,
+  closeOnClick: true,
+  pauseOnHover: true,
+  draggable: true,
+  progress: undefined,
+  theme: "light",
+} satisfies ToastOptions;
+
+const toastSuccess = (message: string, options?: ToastOptions): void => {
+  toast.success(message, {
+    ...toastConfig,
+    ...options,
+  });
+};
+
+const toastError = (message: string, options?: ToastOptions): void => {
+  toast.error(message, {
+    ...toastConfig,
+    ...options,
+  });
+};
 
 const Users = (): JSX.Element => {
   const { userData } = useHookstate<IGlobalState>(globalState).get();
@@ -42,12 +88,44 @@ const Users = (): JSX.Element => {
     getRequest<IAllUsersResponse[]>
   );
 
+  const { trigger: deleteUser, isMutating: isDeleting } = useSWRMutation(
+    {
+      url: `${API_URL}/admin/users`,
+      headers: {
+        Authorization: `Bearer ${userData?.jwt}`,
+      },
+      method: "DELETE",
+    },
+    postRequestWithHeaders<IDeleteRequest, IDeleteResponse>
+  );
+
   useEffect(() => {
     loadUsers();
   }, []);
 
-  const onDeletedUserButtonClick = (userId: number): void => {
-    console.log(userId);
+  const onDeletedUserButtonClick = async (ID: number): Promise<void> => {
+    await deleteUser(
+      { ID },
+      {
+        onSuccess: (data) => {
+          toastSuccess(data?.message, {
+            autoClose: 2000,
+          });
+
+          setTimeout(() => {
+            loadUsers();
+          }, 1000);
+        },
+
+        onError: (error) => {
+          if (error instanceof Error) {
+            toastError(error.message + " Check your email and password.");
+          } else {
+            toastError("Something went wrong. Please try again later.");
+          }
+        },
+      }
+    );
   };
 
   if (!users?.length && !isUsersLoading) {
@@ -85,18 +163,39 @@ const Users = (): JSX.Element => {
                 {new Date(user.CreatedAt).toLocaleDateString()}
               </TableCell>
               <TableCell className="text-right border align-top">
-                {user.Role !== USER_ROLE.ADMIN && (
-                  <Button
-                    disabled={isUsersLoading}
-                    variant="destructive"
-                    size="sm"
-                    onClick={() => {
-                      onDeletedUserButtonClick(user.ID);
-                    }}
-                  >
-                    Delete
-                  </Button>
-                )}
+                <AlertDialog>
+                  <AlertDialogTrigger asChild>
+                    {user.Role !== USER_ROLE.ADMIN && (
+                      <Button
+                        disabled={isUsersLoading || isDeleting}
+                        variant="destructive"
+                        size="sm"
+                      >
+                        Delete
+                      </Button>
+                    )}
+                  </AlertDialogTrigger>
+                  <AlertDialogContent>
+                    <AlertDialogHeader>
+                      <AlertDialogTitle>Delete this user?</AlertDialogTitle>
+                      <AlertDialogDescription>
+                        This action cannot be undone. This will permanently
+                        delete user's account and remove user's data from
+                        server.
+                      </AlertDialogDescription>
+                    </AlertDialogHeader>
+                    <AlertDialogFooter>
+                      <AlertDialogCancel>Cancel</AlertDialogCancel>
+                      <AlertDialogAction
+                        onClick={() => {
+                          onDeletedUserButtonClick(user.ID);
+                        }}
+                      >
+                        Delete
+                      </AlertDialogAction>
+                    </AlertDialogFooter>
+                  </AlertDialogContent>
+                </AlertDialog>
               </TableCell>
             </TableRow>
           ))}

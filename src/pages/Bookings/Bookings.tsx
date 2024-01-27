@@ -4,7 +4,7 @@ import { useHookstate } from "@hookstate/core";
 
 import globalState, { IGlobalState } from "@/state/state";
 
-import { API_URL } from "@/constants";
+import { API_URL, USER_ROLE } from "@/constants";
 import { getRequest } from "@/helpers/getRequest";
 import { postRequestWithHeaders } from "@/helpers/postRequest";
 import { IBooking } from "@/interfaces/booking.interface";
@@ -40,6 +40,7 @@ const Bookings = (): JSX.Element => {
       headers: {
         Authorization: `Bearer ${userData?.jwt}`,
       },
+      method: "POST",
     },
     postRequestWithHeaders<
       { ID: number; Processed: boolean },
@@ -78,6 +79,7 @@ const Bookings = (): JSX.Element => {
           key={booking.ID}
           onProcessClick={onProcessClick}
           loading={isBookingProcessing || isBookingsLoading}
+          hideButton={userData.role === USER_ROLE.USER}
           {...booking}
         />
       ))}

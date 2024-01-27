@@ -34,14 +34,16 @@ export async function postRequestWithHeaders<T, U>(
   {
     url,
     headers,
+    method = "POST",
   }: {
     url: string;
     headers: Record<string, string>;
+    method: string;
   },
   { arg }: { arg: T }
 ): Promise<U> {
   const response = await fetch(url, {
-    method: "POST",
+    method: method,
     body: JSON.stringify({ ...arg }),
     headers: {
       ...headers,
