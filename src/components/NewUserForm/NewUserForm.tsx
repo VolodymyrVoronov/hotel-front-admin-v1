@@ -1,5 +1,5 @@
 import { useNavigate } from "react-router-dom";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useHookstate } from "@hookstate/core";
@@ -11,6 +11,7 @@ import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 import { API_URL, ROUTES } from "@/constants";
 import globalState, { IGlobalState } from "@/state/state";
 import { postRequestWithHeaders } from "@/helpers/postRequest";
+import { getRequest } from "@/helpers/getRequest";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -46,6 +47,11 @@ interface IRegisterRequest {
 
 interface IRegisterResponse {
   message: string;
+}
+
+interface IRolesResponse {
+  ID: number;
+  RoleType: string;
 }
 
 const toastConfig = {
@@ -86,6 +92,20 @@ const NewUserForm = (): JSX.Element => {
       },
     },
     postRequestWithHeaders<IRegisterRequest, IRegisterResponse>
+  );
+
+  const {
+    data: roles,
+    trigger: loadRoles,
+    isMutating: isRolesLoading,
+  } = useSWRMutation(
+    {
+      url: `${API_URL}/admin/roles`,
+      headers: {
+        Authorization: `Bearer ${userData?.jwt}`,
+      },
+    },
+    getRequest<IRolesResponse[]>
   );
 
   const form = useForm<z.infer<typeof formSchema>>({
@@ -130,6 +150,10 @@ const NewUserForm = (): JSX.Element => {
     setTogglePasswordVisibility((prev) => !prev);
   };
 
+  useEffect(() => {
+    loadRoles();
+  }, []);
+
   return (
     <Form {...form}>
       <form
@@ -150,7 +174,7 @@ const NewUserForm = (): JSX.Element => {
                   disabled={isLoading}
                 />
               </FormControl>
-              <FormDescription>Enter your working email</FormDescription>
+              <FormDescription>Enter user's email</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -186,7 +210,7 @@ const NewUserForm = (): JSX.Element => {
                   </Button>
                 </div>
               </FormControl>
-              <FormDescription>Enter your password</FormDescription>
+              <FormDescription>Enter user's password</FormDescription>
               <FormMessage />
             </FormItem>
           )}
@@ -203,16 +227,31 @@ const NewUserForm = (): JSX.Element => {
                 <RadioGroup
                   onValueChange={field.onChange}
                   defaultValue={field.value}
-                  disabled={isLoading}
+                  disabled={isLoading || isRolesLoading}
                 >
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="manager" id="r1" />
-                    <Label htmlFor="r1">Manager</Label>
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    <RadioGroupItem value="user" id="r2" />
-                    <Label htmlFor="r2">User</Label>
-                  </div>
+                  {roles?.map((role) => {
+                    if (role.RoleType === "admin") {
+                      return null;
+                    }
+
+                    return (
+                      <div
+                        key={role.ID}
+                        className="flex items-center space-x-2"
+                      >
+                        <RadioGroupItem
+                          value={role.RoleType}
+                          id={role.ID.toString()}
+                        />
+                        <Label
+                          htmlFor={role.ID.toString()}
+                          className="capitalize"
+                        >
+                          {role.RoleType}
+                        </Label>
+                      </div>
+                    );
+                  })}
                 </RadioGroup>
               </FormControl>
               <FormDescription>Select user's role</FormDescription>
@@ -224,7 +263,7 @@ const NewUserForm = (): JSX.Element => {
         <Button
           type="submit"
           className="flex w-full justify-center rounded-md  px-3 py-1.5 text-sm font-semibold leading-6  focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
-          disabled={isLoading}
+          disabled={isLoading || isRolesLoading}
         >
           Register
         </Button>
