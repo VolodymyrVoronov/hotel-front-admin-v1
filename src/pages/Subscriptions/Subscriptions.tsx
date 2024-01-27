@@ -9,7 +9,6 @@ import { API_URL } from "@/constants";
 import {
   Table,
   TableBody,
-  TableCaption,
   TableCell,
   TableHead,
   TableHeader,
@@ -60,8 +59,6 @@ const Subscriptions = (): JSX.Element => {
   return (
     <div className="flex max-w-[768px] m-auto">
       <Table>
-        <TableCaption>Users Subscriptions</TableCaption>
-
         <TableHeader>
           <TableRow>
             <TableHead className="w-[100px]">ID</TableHead>
