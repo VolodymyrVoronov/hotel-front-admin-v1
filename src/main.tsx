@@ -19,6 +19,7 @@ const Bookings = lazy(() => import("./pages/Bookings/Bookings"));
 const Subscriptions = lazy(() => import("./pages/Subscriptions/Subscriptions"));
 const Emails = lazy(() => import("./pages/Emails/Emails"));
 const Users = lazy(() => import("./pages/Users/Users"));
+const Register = lazy(() => import("./pages/Register/Register"));
 
 import "./styles/custom.css";
 import "./styles/globals.css";
@@ -57,7 +58,11 @@ const router = createBrowserRouter([
       },
       {
         path: ROUTES.REGISTER,
-        element: <Suspense fallback={<Loader />}>Register</Suspense>,
+        element: (
+          <Suspense fallback={<Loader />}>
+            <Register />
+          </Suspense>
+        ),
       },
       {
         path: ROUTES.SUBSCRIPTIONS,

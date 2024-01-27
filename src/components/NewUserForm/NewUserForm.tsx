@@ -1,3 +1,4 @@
+import { useNavigate } from "react-router-dom";
 import { useState } from "react";
 import useSWRMutation from "swr/mutation";
 import { zodResolver } from "@hookform/resolvers/zod";
@@ -7,7 +8,7 @@ import { ToastOptions, toast } from "react-toastify";
 import * as z from "zod";
 import { EyeClosedIcon, EyeOpenIcon } from "@radix-ui/react-icons";
 
-import { API_URL } from "@/constants";
+import { API_URL, ROUTES } from "@/constants";
 import globalState, { IGlobalState } from "@/state/state";
 import { postRequestWithHeaders } from "@/helpers/postRequest";
 
@@ -73,13 +74,11 @@ const toastError = (message: string, options?: ToastOptions): void => {
 };
 
 const NewUserForm = (): JSX.Element => {
+  const navigate = useNavigate();
+
   const { userData } = useHookstate<IGlobalState>(globalState).get();
 
-  const {
-    data,
-    trigger: register,
-    isMutating: isLoading,
-  } = useSWRMutation(
+  const { trigger: register, isMutating: isLoading } = useSWRMutation(
     {
       url: `${API_URL}/admin/register`,
       headers: {
@@ -105,12 +104,16 @@ const NewUserForm = (): JSX.Element => {
     values: z.infer<typeof formSchema>
   ): Promise<void> => {
     await register(values, {
-      onSuccess: () => {
-        toastSuccess(data?.message ?? "", {
+      onSuccess: (data) => {
+        toastSuccess(data?.message, {
           autoClose: 2000,
         });
 
         form.reset();
+
+        setTimeout(() => {
+          navigate(ROUTES.USERS, { replace: true });
+        }, 2000);
       },
 
       onError: (error) => {
@@ -129,7 +132,10 @@ const NewUserForm = (): JSX.Element => {
 
   return (
     <Form {...form}>
-      <form className="space-y-6" onSubmit={form.handleSubmit(onFormSubmit)}>
+      <form
+        className="w-full space-y-6"
+        onSubmit={form.handleSubmit(onFormSubmit)}
+      >
         <FormField
           control={form.control}
           name="Email"

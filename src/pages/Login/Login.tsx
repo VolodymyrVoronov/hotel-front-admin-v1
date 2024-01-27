@@ -106,6 +106,7 @@ const Login = (): JSX.Element => {
         toastSuccess(data?.message, {
           autoClose: 2000,
         });
+
         form.reset();
 
         setTimeout(() => {
